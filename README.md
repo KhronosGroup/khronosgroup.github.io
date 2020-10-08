@@ -1,2 +1,2 @@
 # khronosgroup.github.io
-Feel free to submit changes as you see fit. PRs welcome from all.
+This repository backs the public page here: (https://github.khronos.org/). The Khronos Group welcomes updates to help keep the page useful. PRs welcome from all.
