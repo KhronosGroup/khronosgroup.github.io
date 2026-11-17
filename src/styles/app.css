@@ -1,0 +1,76 @@
+/*
+ * SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+ * SPDX-License-Identifier: Apache-2.0 OR MIT
+ */
+
+@import "tailwindcss";
+
+@source "../templates";
+
+@theme {
+  --font-sans: "Open Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+
+  --color-khr-red: #cc3333;
+  --color-khr-navy: #0d1720;
+  --color-khr-ink: #15212e;
+  --color-khr-blue: #234761;
+  --color-khr-link: #0366d6;
+  --color-khr-sky: #8ebdf2;
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/OpenSans-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/OpenSans-Semibold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/OpenSans-Bold.woff2") format("woff2");
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-khr-link);
+    outline-offset: 2px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .link {
+    @apply font-semibold text-khr-link underline-offset-2 hover:underline dark:text-khr-sky;
+  }
+
+  .panel {
+    @apply rounded-lg border border-slate-200 bg-white dark:border-slate-700/70 dark:bg-khr-ink;
+  }
+
+  .muted {
+    @apply text-slate-600 dark:text-slate-400;
+  }
+}

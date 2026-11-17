@@ -1,0 +1,25 @@
+{
+  "name": "khronosgroup.github.io",
+  "private": true,
+  "type": "module",
+  "description": "Generated directory of public KhronosGroup repositories, served at github.khronos.org",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "fetch": "node scripts/fetch.mjs",
+    "report": "node scripts/report.mjs",
+    "dev": "vite",
+    "bundle": "vite build",
+    "build": "npm run fetch && npm run bundle",
+    "preview": "vite preview",
+    "test": "node --test \"scripts/**/*.test.mjs\""
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "nunjucks": "^3.2.4",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.8",
+    "yaml": "^2.9.1"
+  }
+}

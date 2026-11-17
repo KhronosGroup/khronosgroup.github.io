@@ -5,6 +5,12 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # Contributing
 
+The page is generated. To change which repositories appear or how they are
+grouped, edit the files in `config/`. To change the layout, edit
+`src/templates/page.njk` and `src/styles/app.css`. `README.md` lists the build
+commands.
+
+Run `npm test` and `npm run bundle` before opening a pull request.
 
 ## AI-Assisted Contributions
 

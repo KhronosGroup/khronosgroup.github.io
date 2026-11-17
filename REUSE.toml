@@ -1,0 +1,30 @@
+version = 1
+
+# --------
+# Files that cannot carry a comment header.
+# Every other file states its copyright and license in the file.
+# --------
+
+[[annotations]]
+path = ["package.json", "package-lock.json", "data/**.json"]
+SPDX-FileCopyrightText = "2026 The Khronos Group, Inc."
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = "CNAME"
+SPDX-FileCopyrightText = "2016 The Khronos Group, Inc."
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = "public/images/**.png"
+SPDX-FileCopyrightText = "2021 The Khronos Group, Inc."
+SPDX-License-Identifier = "CC-BY-ND-4.0"
+
+# --------
+# Third party: Open Sans 1.10, license stated in the font name table.
+# --------
+
+[[annotations]]
+path = "src/fonts/**.woff2"
+SPDX-FileCopyrightText = "2010-2011 Google Corporation"
+SPDX-License-Identifier = "Apache-2.0"

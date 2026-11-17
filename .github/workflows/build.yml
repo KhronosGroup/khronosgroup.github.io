@@ -1,0 +1,119 @@
+# SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Daily at 05:17 UTC.
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy to GitHub Pages after building
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.event_name == 'pull_request' && github.ref || 'live' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      # Pushes daily snapshots to the `data` branch.
+      contents: write
+    env:
+      LIVE: ${{ github.event_name != 'pull_request' }}
+      HAS_APP: ${{ secrets.APP_PRIVATE_KEY != '' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      # Traffic needs Administration read on every repository, which only the
+      # organization GitHub App has. Without the App the build uses the
+      # workflow token and the page has no traffic data.
+      - name: Mint GitHub App token
+        id: app
+        if: env.LIVE == 'true' && env.HAS_APP == 'true'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-administration: read
+          permission-metadata: read
+
+      - name: Check out snapshot history
+        if: env.LIVE == 'true'
+        run: |
+          if git fetch --depth 1 origin data:data; then
+            git worktree add history data
+          else
+            git worktree add --orphan -b data history
+          fi
+
+      # Pull requests build from data/sample.json.
+      - name: Fetch repository data
+        if: env.LIVE == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token || github.token }}
+          HISTORY_DIR: history
+        run: npm run fetch
+
+      - run: npm run bundle
+
+      - name: Save snapshot
+        if: env.LIVE == 'true'
+        working-directory: history
+        run: |
+          git add --all
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' \
+                -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                commit --quiet --message "Snapshot $(date -u +%F)"
+            git push origin data
+          fi
+
+      - name: Upload Pages artifact
+        if: env.LIVE == 'true'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+      - name: Upload preview
+        if: env.LIVE != 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-preview
+          path: dist
+          retention-days: 7
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.deploy)
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
