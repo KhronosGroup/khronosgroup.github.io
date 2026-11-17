@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+#
+# Manual corrections to the generated page.
+#
+# include: list a repository that the fork rule or the health rule would hide.
+#          Private, archived and Registry repositories stay hidden.
+# exclude: hide a repository that would otherwise be listed.
+# repos:   per repository settings. Keys: group (an id from groups.yml),
+#          title, description.
+
+include: []
+
+exclude: []
+
+repos: {}

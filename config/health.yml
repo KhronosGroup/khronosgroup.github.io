@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+#
+# Rules that decide which repositories appear on the page.
+# See README.md, section "Health rule".
+
+org: KhronosGroup
+
+# Repositories whose name matches any of these (case-insensitive regex)
+# are never listed.
+exclude_patterns:
+  - registry
+  - '^\.github$'
+
+# Forks of projects owned elsewhere. When true they are listed only
+# through overrides.yml.
+exclude_forks: true
+
+# When true, repositories in the "stale" tier are hidden. When false they
+# are listed with the date of their last activity.
+hide_stale: false
+
+# Trailing window for all health signals, in days.
+window_days: 365
+
+# "active": a human commit within recent_commit_days, or at least
+# min_commits human commits within window_days.
+active:
+  recent_commit_days: 90
+  min_commits: 12
+
+# "maintained": at least one human commit, merged pull request or
+# release within window_days. Anything else is "stale".
+
+# Commit and pull request authors that do not count as human activity.
+# Names ending in "[bot]" are always ignored.
+bots:
+  - dependabot
+  - github-actions
+  - renovate
+  - web-flow
+
+highlights:
+  count: 8
+  # Window for the "Most active" ranking, in days.
+  activity_days: 90
+  # Star gain needs a snapshot at least this many days old.
+  min_snapshot_age_days: 7
+  star_gain_days: 30

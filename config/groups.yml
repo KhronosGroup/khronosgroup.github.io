@@ -1,0 +1,136 @@
+# SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+#
+# Maps repositories to a standard. Groups render in this order.
+# Matching order for a repository:
+#   1. `repos` (exact name, any group)
+#   2. `patterns` (case-insensitive regex on the name, first group wins)
+#   3. `topics` (first group wins)
+#   4. the group marked `fallback: true`
+# Logos live in public/images/.
+
+- id: vulkan
+  title: Vulkan
+  url: https://www.vulkan.org/
+  logo: Round-Vulkan.png
+  repos: [MoltenVK, VK-GL-CTS, VK-GL-CTS-Tools]
+  patterns: ['^vulkan(?!sc)']
+  topics: [vulkan]
+
+- id: vulkansc
+  title: Vulkan SC
+  url: https://www.khronos.org/vulkansc/
+  logo: Round-VulkanSC.png
+  repos: [VulkanTools-ForSC]
+  patterns: ['^vulkansc']
+  topics: [vulkan-sc]
+
+- id: gltf
+  title: glTF
+  url: https://www.khronos.org/gltf/
+  logo: Round-glTF.png
+  repos: [UnityGLTF, COLLADA2GLTF]
+  patterns: ['^gltf']
+  topics: [gltf]
+
+- id: 3dcommerce
+  title: 3D Commerce
+  url: https://www.khronos.org/gltf/3dcommerce/
+  logo: Round-3DComm.png
+  repos: [3D-Formats-Guidelines]
+  patterns: ['^3dc-']
+
+- id: openxr
+  title: OpenXR
+  url: https://www.khronos.org/openxr/
+  logo: Round-OpenXR.png
+  patterns: ['^openxr']
+  topics: [openxr]
+
+- id: spirv
+  title: SPIR-V
+  url: https://www.khronos.org/spirv/
+  logo: Round-SPIR.png
+  patterns: ['^spirv-']
+  topics: [spir-v, spirv]
+
+- id: opencl
+  title: OpenCL
+  url: https://www.khronos.org/opencl/
+  logo: Round-OpenCL.png
+  repos: [libclcxx]
+  patterns: ['^opencl-']
+  topics: [opencl]
+
+- id: sycl
+  title: SYCL
+  url: https://www.khronos.org/sycl/
+  logo: Round-SYCL.png
+  patterns: ['^sycl']
+  topics: [sycl]
+
+- id: webgl
+  title: WebGL
+  url: https://www.khronos.org/webgl/
+  logo: Round-WebGL.png
+  patterns: ['^webgl']
+
+- id: opengl
+  title: OpenGL and GLSL
+  url: https://www.khronos.org/opengl/
+  logo: Round-OpenGL.png
+  repos: [GLSL, glslang]
+  patterns: ['^opengl-']
+
+- id: ktx
+  title: KTX and Data Format
+  url: https://www.khronos.org/ktx/
+  logo: Round-KTX.png
+  repos: [DataFormat, dfdutils]
+  patterns: ['^ktx-']
+  topics: [ktx]
+
+- id: anari
+  title: ANARI
+  url: https://www.khronos.org/anari/
+  logo: Round-ANARI.png
+  patterns: ['^anari-']
+
+- id: openvx
+  title: OpenVX
+  url: https://www.khronos.org/openvx/
+  logo: Round-OpenVX.png
+  patterns: ['^openvx']
+  topics: [openvx]
+
+- id: nnef
+  title: NNEF
+  url: https://www.khronos.org/nnef/
+  logo: Round-NNEF.png
+  patterns: ['^nnef-']
+
+- id: collada
+  title: COLLADA
+  url: https://www.khronos.org/collada/
+  logo: Round-Collada.png
+  repos: [OpenCOLLADA]
+  patterns: ['^collada-']
+
+- id: openvg
+  title: OpenVG
+  url: https://www.khronos.org/openvg/
+  logo: Round-OpenVG.png
+  patterns: ['^openvg-']
+
+- id: kscaf
+  title: Safety Critical Advisory Forum
+  url: https://www.khronos.org/advisors/kscaf/
+  logo: Round-KSCAF.png
+  patterns: ['^kscaf_']
+
+- id: other
+  title: Other
+  url: https://www.khronos.org/
+  logo: Round-Khronos.png
+  fallback: true

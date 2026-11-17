@@ -1,0 +1,199 @@
+{#
+SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+SPDX-License-Identifier: Apache-2.0 OR MIT
+#}
+
+{% set orgUrl = "https://github.com/" + site.org %}
+
+{% macro star() %}
+<svg class="inline-block size-3.5 -translate-y-px fill-current" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L10 14.9l-5.2 2.8 1-5.9L1.5 7.7l5.9-.8z"/></svg>
+{% endmacro %}
+
+{% macro ranking(title, note, repos, metric) %}
+<section class="panel p-5">
+  <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ title }}</h3>
+  <p class="muted mt-0.5 text-xs">{{ note }}</p>
+  <ol class="mt-3 divide-y divide-slate-100 dark:divide-slate-700/60">
+    {% for repo in repos %}
+    <li class="flex items-baseline gap-3 py-2 text-sm">
+      <span class="muted w-4 shrink-0 text-right text-xs tabular-nums">{{ loop.index }}</span>
+      <a class="link min-w-0 flex-1 truncate" href="{{ repo.url }}">{{ repo.title }}</a>
+      <span class="muted shrink-0 text-xs tabular-nums">
+        {% if metric == "stars" %}
+          {{ star() }} {{ repo.stars | compact }}
+        {% elif metric == "activity" %}
+          {{ repo.commitsRecent | plural('commit') }}, {{ repo.mergedPrsRecent | plural('PR') }}
+        {% elif repo.starGain and repo.starGain.gain > 0 %}
+          +{{ repo.starGain.gain }} {{ star() }}
+        {% endif %}
+      </span>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endmacro %}
+
+<a class="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-10 focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:text-khr-link" href="#directory">Skip to the repository directory</a>
+
+<header class="border-b-4 border-slate-300 bg-white dark:border-slate-700 dark:bg-khr-navy">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-4 sm:px-6">
+    <a href="https://www.khronos.org/" aria-label="Khronos Group homepage">
+      <picture>
+        <source srcset="/images/khronos-logo-25-inverted.svg" media="(prefers-color-scheme: dark)">
+        <img class="h-10 w-auto" src="/images/khronos-logo-25.svg" width="187" height="40" alt="The Khronos Group">
+      </picture>
+    </a>
+    <nav aria-label="Khronos">
+      <ul class="flex flex-wrap gap-x-6 gap-y-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
+        <li><a class="hover:text-khr-red" href="https://www.khronos.org/">Khronos.org</a></li>
+        <li><a class="hover:text-khr-red" href="https://registry.khronos.org/">Registry</a></li>
+        <li><a class="hover:text-khr-red" href="https://community.khronos.org/">Forums</a></li>
+        <li><a class="hover:text-khr-red" href="https://khr.io/khrdiscord">Discord</a></li>
+        <li><a class="hover:text-khr-red" href="{{ orgUrl }}">GitHub organization</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-khr-ink/60">
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">Khronos Group on GitHub</h1>
+      <p class="mt-4 max-w-3xl text-lg">
+        The public open source repositories behind the Khronos open standards, grouped by standard.
+        The same repositories in GitHub's own listing are on the
+        <a class="link" href="{{ orgUrl }}">{{ site.org }} GitHub organization</a>.
+      </p>
+      <dl class="mt-8 flex flex-wrap gap-x-10 gap-y-4">
+        <div>
+          <dt class="muted text-sm">Public repositories</dt>
+          <dd class="text-2xl font-bold text-slate-900 tabular-nums dark:text-white">{{ site.stats.total }}</dd>
+        </div>
+        <div>
+          <dt class="muted text-sm">Active</dt>
+          <dd class="text-2xl font-bold text-slate-900 tabular-nums dark:text-white">{{ site.stats.active }}</dd>
+        </div>
+        <div>
+          <dt class="muted text-sm">Standards and projects</dt>
+          <dd class="text-2xl font-bold text-slate-900 tabular-nums dark:text-white">{{ site.groups | length }}</dd>
+        </div>
+        <div>
+          <dt class="muted text-sm">Stars</dt>
+          <dd class="text-2xl font-bold text-slate-900 tabular-nums dark:text-white">{{ site.stats.stars | compact }}</dd>
+        </div>
+      </dl>
+      {% if site.sample %}
+      <p class="mt-6 inline-block rounded border border-amber-400 bg-amber-50 px-3 py-1.5 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+        Built from sample data. Set GH_TOKEN and run <code>npm run build</code> for current data.
+      </p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6" aria-labelledby="highlights">
+    <h2 id="highlights" class="text-2xl font-bold text-slate-900 dark:text-white">Highlights</h2>
+    <div class="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {{ ranking("Most starred", "All time stars", site.highlights.starred, "stars") }}
+      {% if site.highlights.trending | length %}
+        {{ ranking("Trending", "Visitors in the last 14 days and recent star gain", site.highlights.trending, "trending") }}
+      {% endif %}
+      {{ ranking("Most active", "Commits, merged pull requests and closed issues, last 90 days", site.highlights.active, "activity") }}
+    </div>
+  </section>
+
+  <section id="directory" class="mx-auto max-w-6xl px-4 pb-16 sm:px-6" aria-labelledby="directory-title">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 id="directory-title" class="text-2xl font-bold text-slate-900 dark:text-white">Repositories by standard</h2>
+      <label class="block w-full sm:w-72">
+        <span class="sr-only">Filter repositories</span>
+        <input data-filter type="search" name="filter" placeholder="Filter repositories" autocomplete="off"
+          class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 dark:border-slate-600 dark:bg-khr-ink dark:text-white dark:placeholder:text-slate-400">
+      </label>
+    </div>
+
+    <nav class="mt-5" aria-label="Standards">
+      <ul class="flex flex-wrap gap-2 text-sm">
+        {% for group in site.groups %}
+        <li>
+          <a class="inline-block rounded-full border border-slate-300 px-3 py-1 font-semibold text-slate-700 hover:border-khr-red hover:text-khr-red dark:border-slate-600 dark:text-slate-200" href="#{{ group.id }}">
+            {{ group.title }} <span class="muted font-normal">{{ group.repos | length }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <p data-filter-empty hidden class="muted mt-10">No repository matches the filter.</p>
+
+    {% for group in site.groups %}
+    <section id="{{ group.id }}" data-group class="mt-12" aria-labelledby="{{ group.id }}-title">
+      <div class="flex items-center gap-4">
+        <img class="size-12 shrink-0 rounded-full" src="/images/{{ group.logo }}" width="48" height="48" alt="" loading="lazy">
+        <div>
+          <h3 id="{{ group.id }}-title" class="text-xl font-bold text-slate-900 dark:text-white">{{ group.title }}</h3>
+          <a class="link text-sm" href="{{ group.url }}">About {{ group.title if not group.fallback else "the Khronos Group" }}</a>
+        </div>
+      </div>
+      <ul class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {% for repo in group.repos %}
+        <li data-repo="{{ (repo.name + ' ' + repo.description + ' ' + group.title + ' ' + (repo.language or '')) | lower }}" class="panel flex flex-col p-4">
+          <a class="link break-words" href="{{ repo.url }}">{{ repo.title }}</a>
+          <p class="mt-1.5 line-clamp-3 flex-1 text-sm">{{ repo.description }}</p>
+          <p class="muted mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+            {% if repo.tier == "active" %}
+            <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-400">
+              <span class="size-2 rounded-full bg-current" aria-hidden="true"></span>Active
+            </span>
+            {% elif repo.lastActivityAt %}
+            <span>Updated {{ repo.lastActivityAt | monthYear }}</span>
+            {% endif %}
+            <span title="{{ repo.stars }} stars">{{ star() }} {{ repo.stars | compact }}<span class="sr-only"> stars</span></span>
+            {% if repo.language %}<span>{{ repo.language }}</span>{% endif %}
+          </p>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endfor %}
+  </section>
+</main>
+
+<footer class="bg-khr-navy text-slate-300 dark:border-t dark:border-slate-800">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
+    <div>
+      <a href="https://www.khronos.org/"><img class="h-9 w-auto" src="/images/khronos-logo-inverted.svg" width="180" height="36" alt="Khronos Group"></a>
+      <address class="mt-4 text-sm not-italic leading-relaxed">
+        9450 SW Gemini Drive #45043<br>
+        Beaverton, OR 97008 USA<br>
+        Office: +1 (415) 869-8627
+      </address>
+    </div>
+    <div class="text-sm">
+      <h2 class="font-bold text-white">Follow</h2>
+      <ul class="mt-3 space-y-1.5">
+        <li><a class="hover:text-white hover:underline" href="https://eepurl.com/Xh4Q">Newsletter</a></li>
+        <li><a class="hover:text-white hover:underline" href="https://www.youtube.com/user/khronosgroup">YouTube</a></li>
+        <li><a class="hover:text-white hover:underline" href="https://www.linkedin.com/groups?gid=121429">LinkedIn</a></li>
+        <li><a class="hover:text-white hover:underline" href="https://www.khronos.org/feeds/">News feeds</a></li>
+      </ul>
+    </div>
+    <div class="text-sm">
+      <h2 class="font-bold text-white">This page</h2>
+      <ul class="mt-3 space-y-1.5">
+        <li>Data from {{ site.generatedAt | longDate }}</li>
+        <li><a class="hover:text-white hover:underline" href="report.json">Which repositories are listed, and why</a></li>
+        <li><a class="hover:text-white hover:underline" href="{{ orgUrl }}/khronosgroup.github.io">Source and contributions</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-slate-800">
+    <div class="mx-auto flex max-w-6xl flex-wrap justify-between gap-x-8 gap-y-2 px-4 py-5 text-xs sm:px-6">
+      <p>&copy; {{ year }} The Khronos<sup>&reg;</sup> Group Inc. All rights reserved.</p>
+      <ul class="flex flex-wrap gap-x-5 gap-y-1">
+        <li><a class="hover:text-white hover:underline" href="https://www.khronos.org/legal/">Legal Notices</a></li>
+        <li><a class="hover:text-white hover:underline" href="https://www.khronos.org/legal/privacy">Privacy Policy</a></li>
+        <li><a class="hover:text-white hover:underline" href="https://www.khronos.org/legal/trademarks/">Trademark Usage</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

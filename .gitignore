@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+node_modules/
+dist/
+data/repos.json
+history/
+.DS_Store
+CLAUDE.md
